@@ -7,9 +7,13 @@ import './App.css'
 // Form and Controlled Inputs ==================================================
 function App() {
   const [musics, setMusics] = useState([]);
+
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
   const [album, setAlbum] = useState("");
+
+  const [editingId, setEditingId] = useState(null);               //remembers which track user is editing
+  const [newTitle, setNewTitle] = useState("");                   //remembers what the user typed
 
   // Function to update the list and handle the submission =====================
   function handleSubmit(event) {
@@ -34,6 +38,27 @@ function App() {
     setMusics(prev => prev.filter(track=> track.id !== id));
   }
 
+
+  //function to save edited track information ==================================
+  function saveEdit(){
+    setMusics(prev =>
+      prev.map(track =>
+        track.id === editingId
+        ? {...track, title:newTitle}
+        : track
+      )
+    );
+
+    setEditingId(null);
+  }
+
+  //function to Cancel the current Edit ==================================
+  function cancelEdit(){
+    setEditingId(null);
+  }
+
+
+  //Build the page ==============================================================
   return (
     <div>
       <h1>My Music Playlist</h1>
@@ -67,10 +92,40 @@ function App() {
 
       {musics.map(track => (
         <div key={track.id}>
-          <p>{track.title} — {track.artist} — {track.album}</p>
-          <button onClick={()=>deleteTrack(track.id)}>Delete Track</button>
+
+          {editingId === track.id ? (
+            <div>
+
+              <input 
+                value={newTitle} 
+                onChange={event=>setNewTitle(event.target.value)}
+              />
+
+              <button onClick={()=>saveEdit()}>
+                Save
+              </button>
+
+              <button onClick={()=>cancelEdit()}>Cancel</button>
+
+            </div>
+          ) : (
+            <p>Title: {track.title}</p>
+          )}
+          <p>Artist: {track.artist} — Album: {track.album}</p>
+
+          {editingId !== track.id &&
+           <button onClick={()=>{
+              setEditingId(track.id);
+              setNewTitle(track.title);
+            }}>
+              Edit
+            </button>  
+          }
+
+          <button onClick={()=>deleteTrack(track.id)}>Delete</button>
+
         </div>
-      ))}
+      ))}      
     </div>
   );
 }
