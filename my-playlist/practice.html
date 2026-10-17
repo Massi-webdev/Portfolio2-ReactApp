@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>my-playlist</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx">
+
+      import {useState } from "React";
+
+      function LikeButtin(){
+        const [likes, setLikes] = useState(0); 
+        return (
+          <div>
+            <p>Likes: {likes}</p>
+            <button onClick={()=>setLikes(likes + 1)}>
+              Like
+            </button>
+          </div>
+        );
+      }
+
+      function Counter(){
+        const [count, setCount] = useState(0);
+        return (
+          <div>
+            <h1>Count: {count}</h1>
+            <button onClick={()=>setCount(prev => prev + 1)}>Increase</button>  
+            <button onClick={()=>setCount(0)}>Reset Count</button>  
+          </div>
+        )
+      }
+
+      const tracks = [  
+        { id: 1, title: "Starboy", artist: "The Weeknd" },
+        { id: 2, title: "One More Time", artist: "Daft Punk" }
+      ];
+
+      function TrackCard(title,artist,album) {
+        return (
+          <div>
+            <h3>{title}</h3>
+            <p>{artist}</p>
+            <p>{album}</p>
+          </div>
+        );
+      }
+
+
+      function PlaylistHeader(){
+        return (
+          <div>
+            <h1>My Favorite Music</h1>
+            <p>A collection of my favorite tracks</p>
+          </div>
+        );
+      }
+
+      function App (){
+        return (
+          <div>
+            {tracks.map((track)=>(
+              <TrackCard 
+                key={track.id}            // unique componment id / Helps React identify elements in a list
+                title={track.title}       // props : passed info to TrackCard component
+                artist={track.artist}     // props //
+              />
+            ))}
+          </div>
+        );
+      }
+
+      function PlayList(){
+        const [tracks, setTracks] = useState([  
+          { id: 1, title: "Starboy", artist: "The Weeknd" },
+          { id: 2, title: "One More Time", artist: "Daft Punk" }
+        ]);
+
+        return (
+          <div>
+            {tracks.map(track => (
+              <p key={track.id}>
+                {track.title}
+              </p>
+            ))}
+          </div>
+        )
+      }
+
+      // Adding a track ============================================================
+      function addTrack(){
+        const newTrack = {
+          id: 3,
+          title: "Blinding Lights",
+          artist: "The Weeknd"
+        };
+
+        setTracks(previous => [...previous, newTrack]);
+      }
+
+      // Removing a track ==========================================================
+      const tracks1 = [
+        { id: 1, title: "Starboy" },
+        { id: 2, title: "One More Time" },
+        { id: 3, title: "Get Lucky" }
+      ];
+
+      useState(tracks1);
+
+      function removeTrack(id){
+        setTracks(prev=>prev.filter(track=>track.id !== id));
+      }
+
+
+      // Editing a track ==========================================================
+      function App(){
+        const [musics, setMusics] = useState([
+          { id: 1, title: "Starboy" },
+          { id: 2, title: "One More Time" },
+          { id: 3, title: "Get Lucky" }
+      ]);
+
+        function editTrack(id, newTitle){
+          setMusics(prev => 
+                    prev.map(track =>
+                      track.id === id
+                      ? {...track, title: newTitle}
+                      : track
+                      )
+                    );
+        }
+
+        function editArtist (id, newArtist){
+          setMusics(prev =>
+                      prev.map(track =>
+                        track.id === id
+                        ? {...track, artist: newArtist}
+                        : track
+                      )
+                    );
+        }
+
+        return (
+          <div>
+            <h1>My Playlist</h1>
+            {musics.map(track => (
+              <div key={track.id}>
+                <p>{track.title}</p>
+                <p>{track.artist}</p>
+                <button onClick={()=>editTrack(track.id, "Updated Song")}
+                >
+                  Edit Title
+                </button>
+                <button onClick={()=>editArtist(track.id, "Updated Artist")}
+                >
+                  Edit Artist
+                </button>
+              </div>
+            ))}  
+          </div>
+        );
+      }
+      export default App;
+   
+
+      // Form and Controlled Inputs ==================================================
+function App() {
+  const [title, setTitle] = useState("");
+  const [artist, setArtist] = useState("");
+
+  function handleSubmit(event){
+    event.preventDefault();
+    alert(`Added: ${title} by ${artist}`);
+    setTitle("");
+    setArtist("");
+  }
+
+  return (
+    <div>
+      <h1>Add a Track</h1>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          placeholder="Song title"
+          requied
+        />
+        
+        <input
+          value={artist}
+          onChange={(event) => setArtist(event.target.value)}
+          placeholder="Artist"
+          required
+        />
+
+        <button type="submit">Add Track</button>
+      </form>
+
+    </div>
+  );
+}
+
+// FORM Submission ==========================================================================
+function App() {
+  const [musics, setMusics] =  useState([]);
+  const [title, setTitle] = useState("");
+  const [artist, setArtist] = useState("");
+
+  const newTrack = {
+    id:Date.now(),
+    title,
+    artist
+  };
+
+  setMusics(prev=>[...prev, newTrack]);
+
+  function handleSubmit(event){
+  }
+
+  return (
+    <div>
+      <h1>Add a Track</h1>
+
+      <form onSubmit={handleSubmit}>
+      </form>
+
+    </div>
+  );
+}
+      
+
+    </script>
+  </body>
+</html>
